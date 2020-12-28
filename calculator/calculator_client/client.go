@@ -59,7 +59,7 @@ func doServerStreaming(c calculatorpb.CalculatorServiceClient) {
 		if err != nil {
 			log.Fatalf("error while reading stream: %v", err)
 		}
-		log.Printf("Response from GreetManyTimes: %v", msg.GetResult())
+		log.Printf("Response from PrimeNumberManyTimes: %v", msg.GetResult())
 	}
 
 }

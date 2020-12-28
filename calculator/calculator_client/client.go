@@ -36,7 +36,7 @@ func doUnary(c calculatorpb.CalculatorServiceClient) {
 	if err != nil {
 		log.Fatalf("erro while calling Calculator RPC: %v ", err)
 	}
-	log.Printf("Response from Greet: %v", res.Result)
+	log.Printf("Response from Calculator: %v", res.Result)
 }
 
 func doServerStreaming(c calculatorpb.CalculatorServiceClient) {

@@ -35,7 +35,7 @@ func (*server) PrimeNumberManyTimes(req *calculatorpb.PrimeNumberManyTimesReques
 			time.Sleep(1000 * time.Millisecond)
 			N = N / k // divide N by k so that we have the rest of the number left.
 		} else {
-			k = k + 1
+			k++
 		}
 
 	}

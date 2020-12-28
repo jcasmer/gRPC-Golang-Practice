@@ -234,6 +234,7 @@ const _ = grpc.SupportPackageIsVersion4
 type CalculatorServiceClient interface {
 	//Unary
 	Sum(ctx context.Context, in *SumRequest, opts ...grpc.CallOption) (*SumResponse, error)
+	// Server Streaming
 	PrimeNumberManyTimes(ctx context.Context, in *PrimeNumberManyTimesRequest, opts ...grpc.CallOption) (CalculatorService_PrimeNumberManyTimesClient, error)
 }
 
@@ -290,6 +291,7 @@ func (x *calculatorServicePrimeNumberManyTimesClient) Recv() (*PrimeNumbertManyT
 type CalculatorServiceServer interface {
 	//Unary
 	Sum(context.Context, *SumRequest) (*SumResponse, error)
+	// Server Streaming
 	PrimeNumberManyTimes(*PrimeNumberManyTimesRequest, CalculatorService_PrimeNumberManyTimesServer) error
 }
 

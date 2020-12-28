@@ -6,6 +6,7 @@ import (
 	"grpc-go-course/calculator/calculatorpb"
 	"log"
 	"net"
+	"time"
 
 	"google.golang.org/grpc"
 )
@@ -19,6 +20,28 @@ func (*server) Sum(ctx context.Context, req *calculatorpb.SumRequest) (*calculat
 		Result: result,
 	}
 	return res, nil
+}
+
+func (*server) PrimeNumberManyTimes(req *calculatorpb.PrimeNumberManyTimesRequest, stream calculatorpb.CalculatorService_PrimeNumberManyTimesServer) error {
+	fmt.Printf("PrimeNumberManyTimes function was invoked with %v\n", req)
+	N := req.GetNumber()
+	k := int32(2)
+	for N > 1 {
+		if (N % k) == 0 { // if k evenly divides into N
+			res := &calculatorpb.PrimeNumbertManyTimesResponse{
+				Result: k,
+			}
+			stream.Send(res)
+			time.Sleep(1000 * time.Millisecond)
+			N = N / k // divide N by k so that we have the rest of the number left.
+		} else {
+			k = k + 1
+		}
+
+	}
+
+	return nil
+
 }
 
 func main() {

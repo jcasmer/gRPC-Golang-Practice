@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"grpc-go-course/calculator/calculatorpb"
+	"io"
 	"log"
 
 	"google.golang.org/grpc"
@@ -21,7 +22,8 @@ func main() {
 
 	c := calculatorpb.NewCalculatorServiceClient(cc)
 	fmt.Printf("Created calculator client \n")
-	doUnary(c)
+	// doUnary(c)
+	doServerStreaming(c)
 }
 
 func doUnary(c calculatorpb.CalculatorServiceClient) {
@@ -35,4 +37,29 @@ func doUnary(c calculatorpb.CalculatorServiceClient) {
 		log.Fatalf("erro while calling Calculator RPC: %v ", err)
 	}
 	log.Printf("Response from Greet: %v", res.Result)
+}
+
+func doServerStreaming(c calculatorpb.CalculatorServiceClient) {
+	fmt.Println("Starting to do a Server Streaming RPC..")
+
+	req := &calculatorpb.PrimeNumberManyTimesRequest{
+		Number: 120,
+	}
+
+	resStream, err := c.PrimeNumberManyTimes(context.Background(), req)
+	if err != nil {
+		log.Fatalf("error while calling PrimeNumberManyTimes RPC: %v ", err)
+	}
+	for {
+		msg, err := resStream.Recv()
+		if err == io.EOF {
+			// we've reached the end of the stream
+			break
+		}
+		if err != nil {
+			log.Fatalf("error while reading stream: %v", err)
+		}
+		log.Printf("Response from GreetManyTimes: %v", msg.GetResult())
+	}
+
 }

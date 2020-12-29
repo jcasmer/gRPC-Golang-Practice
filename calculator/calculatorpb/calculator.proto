@@ -22,6 +22,14 @@ message PrimeNumbertManyTimesResponse {
     int32 result = 1;
 }
 
+message ComputeAvgRequest {
+    int32 number =1;
+}
+
+message ComputeAvgResponse {
+    double result = 1;
+}
+
 
 service CalculatorService{
     //Unary
@@ -29,4 +37,7 @@ service CalculatorService{
 
     // Server Streaming
     rpc PrimeNumberManyTimes(PrimeNumberManyTimesRequest) returns (stream PrimeNumbertManyTimesResponse){};
+
+    // Client Streaming
+    rpc ComputeAvg(stream ComputeAvgRequest) returns (ComputeAvgResponse){};
 }

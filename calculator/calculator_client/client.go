@@ -6,6 +6,7 @@ import (
 	"grpc-go-course/calculator/calculatorpb"
 	"io"
 	"log"
+	"time"
 
 	"google.golang.org/grpc"
 )
@@ -23,7 +24,8 @@ func main() {
 	c := calculatorpb.NewCalculatorServiceClient(cc)
 	fmt.Printf("Created calculator client \n")
 	// doUnary(c)
-	doServerStreaming(c)
+	// doServerStreaming(c)
+	doClientStreaming(c)
 }
 
 func doUnary(c calculatorpb.CalculatorServiceClient) {
@@ -62,4 +64,36 @@ func doServerStreaming(c calculatorpb.CalculatorServiceClient) {
 		log.Printf("Response from PrimeNumberManyTimes: %v", msg.GetResult())
 	}
 
+}
+
+func doClientStreaming(c calculatorpb.CalculatorServiceClient) {
+	fmt.Println("Starting to do a Client Streaming RPC..")
+
+	requests := []*calculatorpb.ComputeAvgRequest{
+		&calculatorpb.ComputeAvgRequest{
+			Number: 1,
+		},
+		&calculatorpb.ComputeAvgRequest{
+			Number: 2,
+		}, &calculatorpb.ComputeAvgRequest{
+			Number: 3,
+		}, &calculatorpb.ComputeAvgRequest{
+			Number: 4,
+		},
+	}
+	stream, err := c.ComputeAvg(context.Background())
+	if err != nil {
+		log.Fatalf("error calling ComputeAvg: %v", err)
+	}
+	// we iterate over our slice and send each message individally
+	for _, req := range requests {
+		fmt.Printf("Sending req: %v \n", req)
+		stream.Send(req)
+		time.Sleep(1000 * time.Millisecond)
+	}
+	res, err := stream.CloseAndRecv()
+	if err != nil {
+		log.Fatalf("error while receiving response from  ComputeAvg: %v", err)
+	}
+	fmt.Printf("ComputeAvg response: %v \n ", res)
 }

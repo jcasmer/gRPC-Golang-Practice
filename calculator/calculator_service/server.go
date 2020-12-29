@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"grpc-go-course/calculator/calculatorpb"
+	"io"
 	"log"
 	"net"
 	"time"
@@ -42,6 +43,25 @@ func (*server) PrimeNumberManyTimes(req *calculatorpb.PrimeNumberManyTimesReques
 
 	return nil
 
+}
+
+func (*server) ComputeAvg(stream calculatorpb.CalculatorService_ComputeAvgServer) error {
+	fmt.Printf("ComputeAvg function was invoked with a stream request \n")
+	result := 0.0
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			resAvg := float64(result / 4)
+			// we have finished reading the client stream
+			return stream.SendAndClose(&calculatorpb.ComputeAvgResponse{
+				Result: resAvg,
+			})
+		}
+		if err != nil {
+			log.Fatalf("error while reading client stream: %v", err)
+		}
+		result += float64(req.GetNumber())
+	}
 }
 
 func main() {

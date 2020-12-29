@@ -47,20 +47,23 @@ func (*server) PrimeNumberManyTimes(req *calculatorpb.PrimeNumberManyTimesReques
 
 func (*server) ComputeAvg(stream calculatorpb.CalculatorService_ComputeAvgServer) error {
 	fmt.Printf("ComputeAvg function was invoked with a stream request \n")
-	result := 0.0
+	sum := 0.0
+	count := 0
+
 	for {
 		req, err := stream.Recv()
 		if err == io.EOF {
-			resAvg := float64(result / 4)
+			average := sum / float64(count)
 			// we have finished reading the client stream
 			return stream.SendAndClose(&calculatorpb.ComputeAvgResponse{
-				Result: resAvg,
+				Result: average,
 			})
 		}
 		if err != nil {
 			log.Fatalf("error while reading client stream: %v", err)
 		}
-		result += float64(req.GetNumber())
+		sum += float64(req.GetNumber())
+		count++
 	}
 }
 

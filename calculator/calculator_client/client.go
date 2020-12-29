@@ -69,26 +69,17 @@ func doServerStreaming(c calculatorpb.CalculatorServiceClient) {
 func doClientStreaming(c calculatorpb.CalculatorServiceClient) {
 	fmt.Println("Starting to do a Client Streaming RPC..")
 
-	requests := []*calculatorpb.ComputeAvgRequest{
-		&calculatorpb.ComputeAvgRequest{
-			Number: 1,
-		},
-		&calculatorpb.ComputeAvgRequest{
-			Number: 2,
-		}, &calculatorpb.ComputeAvgRequest{
-			Number: 3,
-		}, &calculatorpb.ComputeAvgRequest{
-			Number: 4,
-		},
-	}
+	numbers := []int32{1, 2, 3, 4}
 	stream, err := c.ComputeAvg(context.Background())
 	if err != nil {
 		log.Fatalf("error calling ComputeAvg: %v", err)
 	}
 	// we iterate over our slice and send each message individally
-	for _, req := range requests {
+	for _, req := range numbers {
 		fmt.Printf("Sending req: %v \n", req)
-		stream.Send(req)
+		stream.Send(&calculatorpb.ComputeAvgRequest{
+			Number: req,
+		})
 		time.Sleep(1000 * time.Millisecond)
 	}
 	res, err := stream.CloseAndRecv()

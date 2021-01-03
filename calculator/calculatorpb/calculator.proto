@@ -38,18 +38,30 @@ message FindMaximunResponse {
     int32 maximum = 1;
 }
 
+
+message SquareRootRequest{
+    int32 number = 1;
+}
+
+message SquareRootResponse {
+    double double_root = 1;
+}
+
 service CalculatorService{
     //Unary
     rpc Sum(SumRequest) returns (SumResponse) {};
-
+    
     // Server Streaming
     rpc PrimeNumberManyTimes(PrimeNumberManyTimesRequest) returns (stream PrimeNumbertManyTimesResponse){};
 
     // Client Streaming
     rpc ComputeAvg(stream ComputeAvgRequest) returns (ComputeAvgResponse){};
 
-    //
+    // BiDi Streaming
     rpc FindMaximun(stream FindMaximunRequest) returns (stream FindMaximunResponse){};
 
-    
+    // error handling
+    // this RPC throw an exception if the sent number is negative
+    // the error being sent is of type INVALID_ARGUMENT
+    rpc SquareRoot(SquareRootRequest) returns(SquareRootResponse){};
 }

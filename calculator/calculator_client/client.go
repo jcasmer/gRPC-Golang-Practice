@@ -148,7 +148,7 @@ func doErrorUnary(c calculatorpb.CalculatorServiceClient) {
 }
 func doErrorCall(c calculatorpb.CalculatorServiceClient, n int32) {
 	res, err := c.SquareRoot(context.Background(), &calculatorpb.SquareRootRequest{
-		Number: 10,
+		Number: n,
 	})
 
 	if err != nil {

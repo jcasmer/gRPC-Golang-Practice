@@ -108,6 +108,7 @@ func (*server) SquareRoot(ctx context.Context, req *calculatorpb.SquareRootReque
 			fmt.Sprintf("Received a negative number: %v", number),
 		)
 	}
+	fmt.Println("=========== number ", number)
 	return &calculatorpb.SquareRootResponse{
 		DoubleRoot: math.Sqrt(float64(number)),
 	}, nil

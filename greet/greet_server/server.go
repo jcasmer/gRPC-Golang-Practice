@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type server struct{}
@@ -81,6 +83,25 @@ func (*server) GreetEveryone(stream greetpb.GreetService_GreetEveryoneServer) er
 		}
 
 	}
+}
+
+func (*server) GreetWithDeadline(ctx context.Context, req *greetpb.GreetWithDeadlineRequest) (*greetpb.GreetWithDeadlinResponse, error) {
+	firstname := req.GetGreeting().GetFirstName()
+	for i := 0; i < 3; i++ {
+
+		if ctx.Err() == context.Canceled {
+			// the client canceled tje request
+			fmt.Println("The client canceled the request!")
+			return nil, status.Error(codes.Canceled, "the client canceled the request")
+
+		}
+		time.Sleep(1 * time.Second)
+	}
+	result := "Hello " + firstname
+	res := &greetpb.GreetWithDeadlinResponse{
+		Result: result,
+	}
+	return res, nil
 }
 
 func main() {
